@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Djoonjack Services - Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;color:#333;scroll-behavior:smooth;background:#f0f0f0;}
+header{background:rgba(34,34,34,0.95);color:#fff;padding:20px;position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;z-index:1000;}
+header h1{font-size:24px;}
+header nav a{color:#fff;margin:0 15px;text-decoration:none;font-weight:500;}
+header nav a:hover{color:#ff6600;}
+#hero{background:url('https://source.unsplash.com/1600x600/?technology,solar') no-repeat center/cover;color:#fff;text-align:center;padding:120px 20px;position:relative;}
+#hero::after{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);}
+#hero .container{position:relative; z-index:2;}
+#hero h2{font-size:36px;margin-bottom:15px;}
+#hero p{font-size:18px;margin-bottom:30px;}
+#hero button{padding:12px 25px;background:#ff6600;border:none;color:#fff;border-radius:5px;cursor:pointer;transition:0.3s;}
+#hero button:hover{background:#e55b00;transform:scale(1.05);}
+#services{padding:70px 20px;text-align:center;}
+#services h2{font-size:32px;margin-bottom:30px;display:inline-block;position:relative;}
+#services h2::after{content:"";width:50px;height:3px;background:#ff6600;position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);}
+.service-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:25px;}
+.service-card{background:#fff;padding:30px;width:220px;border-radius:15px;box-shadow:0 10px 20px rgba(0,0,0,0.15);transition:0.5s;}
+.service-card:hover{transform:translateY(-10px) scale(1.05);box-shadow:0 15px 25px rgba(0,0,0,0.25);}
+#contact{padding:70px 20px;background:#222;color:#fff;text-align:center;}
+#contact h2{color:#ff6600;}
+#contact form{max-width:500px;margin:auto;display:flex;flex-direction:column;gap:20px;}
+#contact input,#contact textarea{padding:12px;font-size:16px;border-radius:8px;border:none;width:100%;}
+#contact textarea{min-height:120px;resize:none;}
+#contact button{padding:12px;font-size:16px;background:#ff6600;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:0.3s;}
+#contact button:hover{background:#e55b00;}
+#formMessage{color:#00ff7f;font-weight:bold;margin-top:10px;}
+#adminPanel{padding:70px 20px;text-align:center;display:none;}
+#adminPanel h2{color:#ff6600;}
+#loginForm{max-width:400px;margin:auto;display:flex;flex-direction:column;gap:15px;}
+#loginForm input,#loginForm button{padding:10px;border-radius:5px;border:none;}
+#loginForm button{background:#ff6600;color:#fff;cursor:pointer;}
+#loginForm button:hover{background:#e55b00;}
+#messagesSection{display:none;max-width:700px;margin:auto;text-align:left;}
+.message-item{background:#fff;padding:15px;border-radius:8px;margin-bottom:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+#logoutBtn{padding:10px 15px;margin-top:15px;background:#222;color:#fff;border:none;border-radius:5px;cursor:pointer;}
+#logoutBtn:hover{background:#555;}
+footer{text-align:center;padding:25px;background:#111;color:#fff;}
+@media(max-width:768px){.service-grid{flex-direction:column;align-items:center;}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+<h1>Djoonjack Services</h1>
+<nav>
+<a href="#services">Services</a>
+<a href="#contact">Contact</a>
+<a href="#adminPanel" onclick="showAdminLogin()">Admin</a>
+</nav>
+</div>
+</header>
+
+<section id="hero">
+<div class="container">
+<h2>Bienvenue chez Djoonjack Services</h2>
+<p>Développement, Maintenance, Électricité, Plomberie et Systèmes Solaires</p>
+<button onclick="scrollToContact()">Contactez-nous</button>
+</div>
+</section>
+
+<section id="services">
+<div class="container">
+<h2>Nos Services</h2>
+<div class="service-grid">
+<div class="service-card">Développement & Design</div>
+<div class="service-card">Maintenance</div>
+<div class="service-card">Électricité</div>
+<div class="service-card">Plomberie</div>
+<div class="service-card">Groupement Système Solaire</div>
+</div>
+</div>
+</section>
+
+<section id="contact">
+<div class="container">
+<h2>Contactez-nous</h2>
+<form id="contactForm">
+<input type="text" placeholder="Nom" id="name" required>
+<input type="email" placeholder="Email" id="email" required>
+<textarea placeholder="Message" id="message" required></textarea>
+<button type="submit">Envoyer</button>
+<p id="formMessage"></p>
+</form>
+</div>
+</section>
+
+<section id="adminPanel">
+<div class="container">
+<h2>Admin Panel</h2>
+<div id="loginSection">
+<form id="loginForm">
+<input type="password" placeholder="Mot de passe admin" id="adminPassword" required>
+<button type="submit">Connexion</button>
+<p id="loginMessage" style="color:red;"></p>
+</form>
+</div>
+<div id="messagesSection">
+<div id="messages"></div>
+<button id="logoutBtn" onclick="logoutAdmin()">Déconnexion</button>
+</div>
+</div>
+</section>
+
+<footer>
+<p>&copy; 2025 Djoonjack Services. Tous droits réservés.</p>
+</footer>
+
+<script>
+function scrollToContact(){document.getElementById('contact').scrollIntoView({behavior:'smooth'});}
+let messages = JSON.parse(localStorage.getItem('messages')) || [];
+const form = document.getElementById('contactForm');
+form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const name=document.getElementById('name').value;
+    const email=document.getElementById('email').value;
+    const message=document.getElementById('message').value;
+    messages.push({name,email,message,time:new Date().toLocaleString()});
+    localStorage.setItem('messages', JSON.stringify(messages));
+    document.getElementById('formMessage').innerText=`Merci ${name}, votre message a été envoyé !`;
+    displayMessagesForAdmin();
+    form.reset();
+});
+const adminPass="admin123";
+let adminLoggedIn=false;
+function showAdminLogin(){
+    document.getElementById('loginSection').style.display='block';
+    document.getElementById('messagesSection').style.display='none';
+    document.getElementById('loginMessage').innerText='';
+}
+document.getElementById('loginForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    if(document.getElementById('adminPassword').value===adminPass){
+        document.getElementById('loginSection').style.display='none';
+        document.getElementById('messagesSection').style.display='block';
+        adminLoggedIn=true;
+        displayMessagesForAdmin();
+    }else document.getElementById('loginMessage').innerText='Mot de passe incorrect';
+});
+function displayMessagesForAdmin(){
+    if(!adminLoggedIn) return;
+    const container=document.getElementById('messages');
+    container.innerHTML='';
+    messages.forEach((msg,i)=>{
+        container.innerHTML+=`<div class="message-item"><strong>#${i+1} ${msg.name} (${msg.email}) [${msg.time}]:</strong><p>${msg.message}</p></div>`;
+    });
+}
+function logoutAdmin(){
+    document.getElementById('messagesSection').style.display='none';
+    document.getElementById('loginSection').style.display='block';
+    document.getElementById('adminPassword').value='';
+    adminLoggedIn=false;
+}
+</script>
+
+</body>
+</html>
