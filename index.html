@@ -1,165 +1,590 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Djoonjack Services - Admin</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Djoonjack Services — Tout-en-un (Test & Production)</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Poppins',sans-serif;color:#333;scroll-behavior:smooth;background:#f0f0f0;}
-header{background:rgba(34,34,34,0.95);color:#fff;padding:20px;position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;z-index:1000;}
-header h1{font-size:24px;}
-header nav a{color:#fff;margin:0 15px;text-decoration:none;font-weight:500;}
-header nav a:hover{color:#ff6600;}
-#hero{background:url('https://source.unsplash.com/1600x600/?technology,solar') no-repeat center/cover;color:#fff;text-align:center;padding:120px 20px;position:relative;}
-#hero::after{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);}
-#hero .container{position:relative; z-index:2;}
-#hero h2{font-size:36px;margin-bottom:15px;}
-#hero p{font-size:18px;margin-bottom:30px;}
-#hero button{padding:12px 25px;background:#ff6600;border:none;color:#fff;border-radius:5px;cursor:pointer;transition:0.3s;}
-#hero button:hover{background:#e55b00;transform:scale(1.05);}
-#services{padding:70px 20px;text-align:center;}
-#services h2{font-size:32px;margin-bottom:30px;display:inline-block;position:relative;}
-#services h2::after{content:"";width:50px;height:3px;background:#ff6600;position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);}
-.service-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:25px;}
-.service-card{background:#fff;padding:30px;width:220px;border-radius:15px;box-shadow:0 10px 20px rgba(0,0,0,0.15);transition:0.5s;}
-.service-card:hover{transform:translateY(-10px) scale(1.05);box-shadow:0 15px 25px rgba(0,0,0,0.25);}
-#contact{padding:70px 20px;background:#222;color:#fff;text-align:center;}
-#contact h2{color:#ff6600;}
-#contact form{max-width:500px;margin:auto;display:flex;flex-direction:column;gap:20px;}
-#contact input,#contact textarea{padding:12px;font-size:16px;border-radius:8px;border:none;width:100%;}
-#contact textarea{min-height:120px;resize:none;}
-#contact button{padding:12px;font-size:16px;background:#ff6600;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:0.3s;}
-#contact button:hover{background:#e55b00;}
-#formMessage{color:#00ff7f;font-weight:bold;margin-top:10px;}
-#adminPanel{padding:70px 20px;text-align:center;display:none;}
-#adminPanel h2{color:#ff6600;}
-#loginForm{max-width:400px;margin:auto;display:flex;flex-direction:column;gap:15px;}
-#loginForm input,#loginForm button{padding:10px;border-radius:5px;border:none;}
-#loginForm button{background:#ff6600;color:#fff;cursor:pointer;}
-#loginForm button:hover{background:#e55b00;}
-#messagesSection{display:none;max-width:700px;margin:auto;text-align:left;}
-.message-item{background:#fff;padding:15px;border-radius:8px;margin-bottom:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-#logoutBtn{padding:10px 15px;margin-top:15px;background:#222;color:#fff;border:none;border-radius:5px;cursor:pointer;}
-#logoutBtn:hover{background:#555;}
-footer{text-align:center;padding:25px;background:#111;color:#fff;}
-@media(max-width:768px){.service-grid{flex-direction:column;align-items:center;}}
+:root{--accent:#ff6600;--bg:#f8f8f8;--dark:#111}
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);margin:0;color:#222}
+header{background:var(--dark);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+header h1{font-size:18px;margin:0}
+nav{display:flex;gap:8px;align-items:center}
+nav a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-weight:600}
+nav a:hover{background:rgba(255,255,255,0.03)}
+.container{max-width:1100px;margin:0 auto;padding:18px}
+.hero{background:url('https://source.unsplash.com/1600x600/?technology,solar') center/cover;color:#fff;padding:70px;border-radius:10px;position:relative;margin:18px}
+.hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.35);border-radius:10px}
+.hero .inner{position:relative;z-index:1;text-align:center}
+.btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+.section{background:#fff;padding:22px;border-radius:10px;margin:18px 0;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+.services-grid{display:flex;gap:14px;flex-wrap:wrap}
+.card{flex:0 1 220px;background:#fff;padding:16px;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,0.06);cursor:pointer}
+.detail-panel{display:none;margin-top:12px}
+.form{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+input,textarea,select,button{font-size:15px}
+input,textarea,select{padding:10px;border-radius:8px;border:1px solid #ddd}
+textarea{min-height:120px;resize:vertical}
+.small{font-size:13px;color:#666}
+.hidden{display:none}
+.admin-profile{background:linear-gradient(90deg,#222,#333);color:#fff;padding:18px;border-radius:10px;text-align:center}
+.admin-photo{width:90px;height:90px;border-radius:50%;border:3px solid #fff;object-fit:cover}
+.admin-header{display:flex;gap:16px;align-items:center;justify-content:center;margin-bottom:12px}
+.message-item{background:#fff;padding:12px;border-radius:8px;margin-bottom:10px;box-shadow:0 6px 12px rgba(0,0,0,0.04)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:2000}
+.modal .box{background:#fff;padding:20px;border-radius:10px;max-width:480px;width:94%}
+.row{display:flex;gap:8px;align-items:center}
+.footer{background:#111;color:#fff;padding:12px;text-align:center;margin-top:18px}
+@media(max-width:720px){.services-grid{flex-direction:column;align-items:stretch}}
 </style>
 </head>
 <body>
 
 <header>
-<div class="container">
-<h1>Djoonjack Services</h1>
-<nav>
-<a href="#services">Services</a>
-<a href="#contact">Contact</a>
-<a href="#adminPanel" onclick="showAdminLogin()">Admin</a>
-</nav>
-</div>
+  <h1>Djoonjack Services</h1>
+  <nav>
+    <a onclick="openSection('home')">Accueil</a>
+    <a onclick="openSection('services')">Services</a>
+    <a onclick="openSection('contact')">Contact</a>
+    <a onclick="openSection('auth')">Connexion / Inscription</a>
+    <a id="adminLink" onclick="openAdminFlow()">Admin</a>
+  </nav>
+  <div id="userControls" style="display:flex;gap:10px;align-items:center"></div>
 </header>
 
-<section id="hero">
-<div class="container">
-<h2>Bienvenue chez Djoonjack Services</h2>
-<p>Développement, Maintenance, Électricité, Plomberie et Systèmes Solaires</p>
-<button onclick="scrollToContact()">Contactez-nous</button>
-</div>
-</section>
+<main class="container">
 
-<section id="services">
-<div class="container">
-<h2>Nos Services</h2>
-<div class="service-grid">
-<div class="service-card">Développement & Design</div>
-<div class="service-card">Maintenance</div>
-<div class="service-card">Électricité</div>
-<div class="service-card">Plomberie</div>
-<div class="service-card">Groupement Système Solaire</div>
-</div>
-</div>
-</section>
+  <section id="home" class="section">
+    <div class="hero">
+      <div class="inner">
+        <h2>Djoonjack Services — Installation & Réparation</h2>
+        <p>Développement & design, maintenance, électricité, plomberie et systèmes solaires.</p>
+        <button class="btn" onclick="openSection('services')">Voir nos services</button>
+      </div>
+    </div>
+  </section>
 
-<section id="contact">
-<div class="container">
-<h2>Contactez-nous</h2>
-<form id="contactForm">
-<input type="text" placeholder="Nom" id="name" required>
-<input type="email" placeholder="Email" id="email" required>
-<textarea placeholder="Message" id="message" required></textarea>
-<button type="submit">Envoyer</button>
-<p id="formMessage"></p>
-</form>
-</div>
-</section>
+  <section id="services" class="section hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3>Nos Services</h3>
+      <div class="small">Clique sur un service pour voir les détails</div>
+    </div>
+    <div class="services-grid" style="margin-top:12px">
+      <div class="card" onclick="selectService('dev')"><h4>Développement & design</h4><p class="small">Sites web, applications, UI/UX</p></div>
+      <div class="card" onclick="selectService('maint')"><h4>Maintenance</h4><p class="small">Support & mises à jour</p></div>
+      <div class="card" onclick="selectService('elec')"><h4>Électricité</h4><p class="small">Installation & réparation</p></div>
+      <div class="card" onclick="selectService('plomb')"><h4>Plomberie</h4><p class="small">Réparation & installation</p></div>
+      <div class="card" onclick="selectService('solar')"><h4>Système solaire</h4><p class="small">Panneaux & onduleurs</p></div>
+    </div>
+    <div id="serviceDetail" class="detail-panel section hidden"></div>
+  </section>
 
-<section id="adminPanel">
-<div class="container">
-<h2>Admin Panel</h2>
-<div id="loginSection">
-<form id="loginForm">
-<input type="password" placeholder="Mot de passe admin" id="adminPassword" required>
-<button type="submit">Connexion</button>
-<p id="loginMessage" style="color:red;"></p>
-</form>
-</div>
-<div id="messagesSection">
-<div id="messages"></div>
-<button id="logoutBtn" onclick="logoutAdmin()">Déconnexion</button>
-</div>
-</div>
-</section>
+  <section id="contact" class="section hidden">
+    <h3>Contactez-nous</h3>
+    <form id="contactForm" class="form">
+      <input id="contact_name" placeholder="Nom complet" required />
+      <input id="contact_email" placeholder="Email" type="email" required />
+      <select id="contact_service">
+        <option>Général</option>
+        <option>Développement & design</option>
+        <option>Maintenance</option>
+        <option>Électricité</option>
+        <option>Plomberie</option>
+        <option>Système solaire</option>
+      </select>
+      <textarea id="contact_message" placeholder="Message" required></textarea>
+      <div class="row">
+        <button id="contactSend" class="btn" type="submit">Envoyer</button>
+        <div id="contactStatus" class="small"></div>
+      </div>
+    </form>
+  </section>
 
-<footer>
-<p>&copy; 2025 Djoonjack Services. Tous droits réservés.</p>
-</footer>
+  <section id="auth" class="section hidden">
+    <h3>Connexion / Inscription</h3>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+      <button id="tabLogin" class="btn" onclick="showAuth('login')">Connexion</button>
+      <button id="tabRegister" class="btn" onclick="showAuth('register')">Inscription</button>
+      <button id="tabGoogle" class="btn" onclick="signInWithGoogle()">Connexion Google</button>
+    </div>
+
+    <div id="authLogin" class="form hidden">
+      <input id="loginEmail" placeholder="Email" type="email" />
+      <input id="loginPassword" placeholder="Mot de passe" type="password" />
+      <div class="row">
+        <button class="btn" onclick="handleLogin(event)">Se connecter</button>
+        <button class="btn" onclick="showAuth('reset')">Mot de passe oublié</button>
+      </div>
+      <div id="loginStatus" class="small"></div>
+    </div>
+
+    <div id="authRegister" class="form hidden">
+      <input id="regNom" placeholder="Nom complet" />
+      <input id="regDateNaiss" type="date" placeholder="Date de naissance" />
+      <input id="regLieuNaiss" placeholder="Lieu de naissance" />
+      <input id="regEmail" type="email" placeholder="Email" />
+      <input id="regAdresse" placeholder="Adresse à domicile" />
+      <select id="regSexe">
+        <option value="">Sélectionner le sexe</option>
+        <option value="Homme">Homme</option>
+        <option value="Femme">Femme</option>
+        <option value="Autre">Autre</option>
+      </select>
+      <input id="regTel" placeholder="Téléphone" />
+      <input id="regPassword" type="password" placeholder="Mot de passe (≥ 6 caractères)" />
+      <button class="btn" onclick="handleRegister(event)">S'inscrire</button>
+      <div id="regStatus" class="small"></div>
+    </div>
+
+    <div id="authReset" class="form hidden">
+      <input id="resetEmail" placeholder="Ton email" type="email" />
+      <button class="btn" onclick="handleReset(event)">Recevoir e-mail</button>
+      <div id="resetStatus" class="small"></div>
+    </div>
+  </section>
+
+  <section id="member" class="section hidden">
+    <h3>Zone membre — contenu réservé</h3>
+    <p>Bienvenue ! En tant que client connecté, tu peux voir le contenu complet et demander des services.</p>
+    <div id="memberContent"></div>
+  </section>
+
+  <section id="admin" class="section hidden">
+    <div id="adminProfile" class="admin-profile">
+      <div class="admin-header">
+        <img id="adminPhoto" class="admin-photo" src="https://i.imgur.com/Zn6FhMq.png" alt="Admin">
+      </div>
+      <h3 id="adminName">Djoonjack Services</h3>
+      <div id="adminRole" class="small">Fondateur & Directeur Technique</div>
+      <p id="adminBio" class="small" style="max-width:800px;margin:12px auto 0;">Expert en développement, design, maintenance, électricité, plomberie et systèmes solaires.</p>
+    </div>
+
+    <h3>Messages reçus</h3>
+    <div id="messagesList" class="small" style="margin-top:12px">Chargement…</div>
+  </section>
+
+</main>
+
+<footer class="footer">© <span id="year"></span> Djoonjack Services — Tous droits réservés.</footer>
+
+<!-- Admin password modal (only shown when needed) -->
+<div id="adminModal" class="modal">
+  <div class="box">
+    <h3>Connexion Admin</h3>
+    <input id="adminPasswordInput" type="password" placeholder="Mot de passe admin" style="width:100%;padding:8px;margin:10px 0;border-radius:6px;border:1px solid #ccc" />
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" onclick="tryAdminPassword()">Se connecter</button>
+      <button class="btn" onclick="closeAdminModal()">Annuler</button>
+    </div>
+    <div id="adminModalStatus" class="small" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- Firebase libs (used only if you paste config below) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script>
-function scrollToContact(){document.getElementById('contact').scrollIntoView({behavior:'smooth'});}
-let messages = JSON.parse(localStorage.getItem('messages')) || [];
-const form = document.getElementById('contactForm');
-form.addEventListener('submit', e=>{
-    e.preventDefault();
-    const name=document.getElementById('name').value;
-    const email=document.getElementById('email').value;
-    const message=document.getElementById('message').value;
-    messages.push({name,email,message,time:new Date().toLocaleString()});
-    localStorage.setItem('messages', JSON.stringify(messages));
-    document.getElementById('formMessage').innerText=`Merci ${name}, votre message a été envoyé !`;
-    displayMessagesForAdmin();
-    form.reset();
-});
-const adminPass="admin123";
-let adminLoggedIn=false;
-function showAdminLogin(){
-    document.getElementById('loginSection').style.display='block';
-    document.getElementById('messagesSection').style.display='none';
-    document.getElementById('loginMessage').innerText='';
-}
-document.getElementById('loginForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    if(document.getElementById('adminPassword').value===adminPass){
-        document.getElementById('loginSection').style.display='none';
-        document.getElementById('messagesSection').style.display='block';
-        adminLoggedIn=true;
-        displayMessagesForAdmin();
-    }else document.getElementById('loginMessage').innerText='Mot de passe incorrect';
-});
-function displayMessagesForAdmin(){
-    if(!adminLoggedIn) return;
-    const container=document.getElementById('messages');
-    container.innerHTML='';
-    messages.forEach((msg,i)=>{
-        container.innerHTML+=`<div class="message-item"><strong>#${i+1} ${msg.name} (${msg.email}) [${msg.time}]:</strong><p>${msg.message}</p></div>`;
-    });
-}
-function logoutAdmin(){
-    document.getElementById('messagesSection').style.display='none';
-    document.getElementById('loginSection').style.display='block';
-    document.getElementById('adminPassword').value='';
-    adminLoggedIn=false;
-}
-</script>
+/* ==================== CONFIG — MODIFIE ICI (si tu veux Firebase) ====================
+  - Si tu laisses firebaseConfig.apiKey commençant par "VOTRE" alors le site utilisera
+    un mode local de test (utile pour tester immédiatement sans Firebase).
+  - Remplace ADMIN_ALLOWLIST par ton email admin en minuscule si tu veux login admin par compte.
+  - ADMIN_PASSWORD: mot de passe personnel admin (exact).
+=============================================================================== */
+const firebaseConfig = {
+  apiKey: "VOTRE_API_KEY",
+  authDomain: "VOTRE_PROJECT_ID.firebaseapp.com",
+  projectId: "VOTRE_PROJECT_ID",
+  storageBucket: "VOTRE_PROJECT_ID.appspot.com",
+  messagingSenderId: "VOTRE_SENDER_ID",
+  appId: "VOTRE_APP_ID"
+};
 
+const EMAILJS_SERVICE_ID = ""; // optionnel
+const EMAILJS_TEMPLATE_ID = ""; // optionnel
+const EMAILJS_USER_ID = ""; // optionnel
+
+const ADMIN_ALLOWLIST = ["ton.email.admin@example.com"]; // mettre ton e-mail admin ici (minuscule)
+const ADMIN_PASSWORD = "Lo1983veJoseph83ItsMe4820"; // mot de passe personnel (tel que demandé)
+const WHATSAPP_NUMBER = ""; // optionnel: "509XXXXXXXX" sans '+'
+/* ==================== FIN CONFIG =============================================== */
+
+/* local-mode variables (utilisé si firebase non configuré) */
+let useLocalMode = typeof firebaseConfig.apiKey !== 'string' || firebaseConfig.apiKey.startsWith('VOTRE');
+let localUsers = []; // {email, password, profile}
+let localMessages = []; // {name,email,service,message,time}
+
+/* initialize firebase only if configured */
+let auth = null;
+let db = null;
+if(!useLocalMode){
+  try{
+    firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.firestore();
+  }catch(e){
+    console.warn('Firebase init failed, switching to local mode', e);
+    useLocalMode = true;
+  }
+}
+
+/* helpers */
+document.getElementById('year').innerText = new Date().getFullYear();
+
+function openSection(id){
+  const sections = ['home','services','contact','auth','member','admin'];
+  sections.forEach(s=>{
+    const el = document.getElementById(s);
+    if(el) el.classList.toggle('hidden', s !== id);
+  });
+  if(id !== 'services') document.getElementById('serviceDetail').classList.add('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* Services */
+const SERVICES = {
+  dev:{title:"Développement & Design",desc:"Création de sites web responsives, applications, UI/UX design et optimisation SEO.",bullets:["Sites vitrines & e-commerce","Design UI/UX","Optimisation performance","Maintenance"]},
+  maint:{title:"Maintenance",desc:"Support, mises à jour, sauvegardes et monitoring.",bullets:["Support 24/7","Mises à jour régulières","Sauvegardes","Monitoring"]},
+  elec:{title:"Électricité",desc:"Installations électriques, tableaux, câblage, dépannage.",bullets:["Installation domestique","Tableaux électriques","Dépannage","Mise en conformité"]},
+  plomb:{title:"Plomberie",desc:"Interventions plomberie : fuites, installations, étanchéité.",bullets:["Réparation fuites","Installation sanitaire","Entretien","Étanchéité"]},
+  solar:{title:"Système Solaire",desc:"Étude, fourniture et installation de systèmes solaires.",bullets:["Étude de site","Installation complète","Maintenance","Solutions hybrides"]}
+};
+function selectService(key){
+  const info = SERVICES[key];
+  const panel = document.getElementById('serviceDetail');
+  panel.innerHTML = `<div class="section"><h3>${info.title}</h3><p>${info.desc}</p><ul>${info.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+    <div style="margin-top:10px"><button class="btn" onclick="openContactFor('${info.title}')">Demander ce service</button></div></div>`;
+  panel.classList.remove('hidden');
+  openSection('services');
+}
+function openContactFor(title){
+  openSection('contact');
+  setTimeout(()=>{ const el = document.getElementById('contact_service'); if(el) el.value = title; },100);
+}
+
+/* ===== AUTH (local or Firebase) ===== */
+function showAuth(mode){
+  document.getElementById('authLogin').classList.toggle('hidden', mode !== 'login');
+  document.getElementById('authRegister').classList.toggle('hidden', mode !== 'register');
+  document.getElementById('authReset').classList.toggle('hidden', mode !== 'reset');
+}
+
+/* REGISTER */
+async function handleRegister(e){
+  e && e.preventDefault && e.preventDefault();
+  const nom = document.getElementById('regNom').value.trim();
+  const dateNaiss = document.getElementById('regDateNaiss').value;
+  const lieuNaiss = document.getElementById('regLieuNaiss').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const adresse = document.getElementById('regAdresse').value.trim();
+  const sexe = document.getElementById('regSexe').value;
+  const tel = document.getElementById('regTel').value.trim();
+  const pass = document.getElementById('regPassword').value;
+  if(!nom||!dateNaiss||!lieuNaiss||!email||!adresse||!sexe||!tel||!pass){
+    document.getElementById('regStatus').innerText = "Remplis tous les champs";
+    return;
+  }
+
+  if(useLocalMode){
+    if(localUsers.find(u=>u.email.toLowerCase()===email.toLowerCase())){
+      document.getElementById('regStatus').innerText = "Email déjà utilisé (mode local)";
+      return;
+    }
+    const id = 'local-'+(localUsers.length+1);
+    localUsers.push({id,email,password:pass,profile:{nom,dateNaiss,lieuNaiss,adresse,sexe,tel,created:new Date().toISOString()}});
+    document.getElementById('regStatus').innerText = "Inscription (mode local) réussie — connecte-toi.";
+    return;
+  }
+
+  try{
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await db.collection('clients').doc(cred.user.uid).set({nom,dateNaiss,lieuNaiss,email,adresse,sexe,tel,created:new Date().toISOString()});
+    document.getElementById('regStatus').innerText = "Inscription réussie — connecte-toi.";
+  }catch(err){
+    document.getElementById('regStatus').innerText = err.message;
+  }
+}
+
+/* LOGIN */
+async function handleLogin(e){
+  e && e.preventDefault && e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  if(!email||!pass){ document.getElementById('loginStatus').innerText = "Remplis tous les champs"; return; }
+
+  if(useLocalMode){
+    const u = localUsers.find(u=>u.email.toLowerCase()===email.toLowerCase() && u.password === pass);
+    if(u){
+      onUserSignedIn({uid:u.id,email:u.email,profile:u.profile,isLocal:true});
+      document.getElementById('loginStatus').innerText = "Connexion (mode local) réussie";
+    } else {
+      document.getElementById('loginStatus').innerText = "Email ou mot de passe incorrect (mode local)";
+    }
+    return;
+  }
+
+  try{
+    await auth.signInWithEmailAndPassword(email, pass);
+    document.getElementById('loginStatus').innerText = "Connexion réussie";
+    // onAuthStateChanged will handle UI
+  }catch(err){
+    document.getElementById('loginStatus').innerText = err.message;
+  }
+}
+
+/* RESET */
+async function handleReset(e){
+  e && e.preventDefault && e.preventDefault();
+  const email = document.getElementById('resetEmail').value;
+  if(!email){ document.getElementById('resetStatus').innerText = 'Entrer un email'; return; }
+  if(useLocalMode){
+    document.getElementById('resetStatus').innerText = 'Mode local : pas d\'email envoyé';
+    return;
+  }
+  try{
+    await auth.sendPasswordResetEmail(email);
+    document.getElementById('resetStatus').innerText = 'Email de réinitialisation envoyé.';
+  }catch(err){
+    document.getElementById('resetStatus').innerText = err.message;
+  }
+}
+
+/* Google sign-in (only if firebase configured) */
+async function signInWithGoogle(){
+  if(useLocalMode){ alert('Google Sign-in non disponible en mode local'); return; }
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try{ await auth.signInWithPopup(provider); }catch(err){ alert('Erreur Google Sign-in: '+err.message); }
+}
+
+/* sign out */
+function signOut(){
+  if(useLocalMode){
+    onUserSignedOut();
+    return;
+  }
+  auth.signOut();
+}
+
+/* ===== Contact form handling (Firestore or local) ===== */
+document.getElementById('contactForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const name = document.getElementById('contact_name').value.trim();
+  const email = document.getElementById('contact_email').value.trim();
+  const service = document.getElementById('contact_service').value;
+  const message = document.getElementById('contact_message').value.trim();
+  if(!name||!email||!message){ document.getElementById('contactStatus').innerText = 'Remplis tous les champs'; return; }
+
+  document.getElementById('contactSend').disabled = true;
+  document.getElementById('contactStatus').innerText = 'Envoi en cours…';
+
+  try{
+    if(useLocalMode){
+      localMessages.unshift({name,email,service,message,time:new Date().toISOString()});
+      document.getElementById('contactStatus').innerText = 'Message enregistré (mode local)';
+      // refresh admin view if open
+      const cur = currentUser;
+      if(cur && (cur.isAdmin || (cur.email && ADMIN_ALLOWLIST.includes(cur.email.toLowerCase())))) loadMessages();
+    } else {
+      const docRef = await db.collection('messages').add({name,email,service,message,time:new Date().toISOString()});
+      document.getElementById('contactStatus').innerText = 'Message envoyé !';
+    }
+    document.getElementById('contactForm').reset();
+    // open whatsapp optionally
+    if(WHATSAPP_NUMBER && WHATSAPP_NUMBER.length>5){
+      const waText = encodeURIComponent(`Nouveau message: ${name} (${email}) - Service: ${service}`);
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`, '_blank');
+    }
+  }catch(err){
+    console.error(err);
+    document.getElementById('contactStatus').innerText = 'Erreur: '+err.message;
+  }finally{
+    document.getElementById('contactSend').disabled = false;
+  }
+});
+
+/* ===== Admin flow ===== */
+function openAdminFlow(){
+  const cur = currentUser;
+  if(cur && cur.email && ADMIN_ALLOWLIST.includes(cur.email.toLowerCase())){
+    showAdmin();
+    return;
+  }
+  // else open modal for password
+  openAdminModal();
+}
+function showAdmin(){
+  openSection('admin');
+  loadAdminProfile();
+  loadMessages();
+}
+
+/* modal helpers */
+function openAdminModal(){ document.getElementById('adminModal').style.display='flex'; document.getElementById('adminModalStatus').innerText=''; document.getElementById('adminPasswordInput').value=''; }
+function closeAdminModal(){ document.getElementById('adminModal').style.display='none'; }
+
+/* try admin password */
+function tryAdminPassword(){
+  const pass = (document.getElementById('adminPasswordInput')?.value || '').trim();
+  if(pass === ADMIN_PASSWORD){
+    closeAdminModal();
+    // set a temporary local admin session (not persisted)
+    currentUser = {email: 'admin.local', isAdmin: true, isLocal: true};
+    updateUserUI();
+    showAdmin();
+  } else {
+    document.getElementById('adminModalStatus').innerText = 'Mot de passe incorrect';
+  }
+}
+
+/* ===== Load messages (from Firestore or local) ===== */
+async function loadMessages(){
+  const list = document.getElementById('messagesList');
+  list.innerHTML = 'Chargement des messages…';
+  try{
+    if(useLocalMode){
+      if(localMessages.length === 0){ list.innerHTML = '<div class="small">Aucun message.</div>'; return; }
+      list.innerHTML = '';
+      localMessages.forEach((m,i)=>{
+        const t = new Date(m.time).toLocaleString();
+        const el = document.createElement('div');
+        el.className = 'message-item';
+        el.innerHTML = `<strong>${escapeHtml(m.name)}</strong> — <small>${escapeHtml(m.email)}</small>
+                        <div class="small">${escapeHtml(m.service)} • ${t}</div>
+                        <p style="margin-top:8px">${escapeHtml(m.message)}</p>`;
+        list.appendChild(el);
+      });
+      return;
+    }
+    const snapshot = await db.collection('messages').orderBy('time','desc').get();
+    if(snapshot.empty){ list.innerHTML = '<div class="small">Aucun message.</div>'; return; }
+    list.innerHTML = '';
+    snapshot.forEach(doc=>{
+      const d = doc.data();
+      const t = new Date(d.time).toLocaleString();
+      const el = document.createElement('div');
+      el.className = 'message-item';
+      el.innerHTML = `<strong>${escapeHtml(d.name)}</strong> — <small>${escapeHtml(d.email)}</small>
+                      <div class="small">${escapeHtml(d.service)} • ${t}</div>
+                      <p style="margin-top:8px">${escapeHtml(d.message)}</p>
+                      <div style="margin-top:8px">
+                        <button class="btn" onclick="copyToClipboard(${JSON.stringify(d.message)})">Copier</button>
+                        <button class="btn" style="margin-left:8px" onclick="deleteMessage('${doc.id}', this)">Supprimer</button>
+                      </div>`;
+      list.appendChild(el);
+    });
+  }catch(err){
+    console.error(err);
+    list.innerHTML = '<div class="small" style="color:red">Erreur: '+err.message+'</div>';
+  }
+}
+
+/* delete message */
+async function deleteMessage(id, btn){
+  if(!confirm('Supprimer ce message ?')) return;
+  try{
+    if(useLocalMode){
+      // can't delete by id in local; just remove last or clear
+      localMessages = [];
+      loadMessages();
+      return;
+    }
+    await db.collection('messages').doc(id).delete();
+    btn.closest('.message-item').remove();
+  }catch(err){
+    alert('Erreur suppression: '+err.message);
+  }
+}
+
+/* copy to clipboard */
+function copyToClipboard(text){
+  navigator.clipboard?.writeText(text).then(()=>alert('Copié'));
+}
+
+/* escape helper */
+function escapeHtml(str){ if(!str) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
+
+/* ===== User state handling ===== */
+let currentUser = null; // {uid,email,profile,isAdmin,isLocal}
+
+function onUserSignedIn(user){ // for local sign-in we call this manually
+  currentUser = user;
+  updateUserUI();
+}
+
+function onUserSignedOut(){
+  currentUser = null;
+  updateUserUI();
+}
+
+/* update UI when user changes */
+function updateUserUI(){
+  const ctrl = document.getElementById('userControls');
+  if(currentUser){
+    ctrl.innerHTML = `<div class="small" style="color:#ddd">${escapeHtml(currentUser.email||'Client')}</div>
+      <button class="btn" onclick="signOutLocal()">Déconnexion</button>
+      <button class="btn" onclick="openSection('member')">Zone membre</button>`;
+    // show services/contact for logged-in users
+    document.getElementById('services').classList.remove('hidden');
+    document.getElementById('contact').classList.remove('hidden');
+    // if admin user by allowlist
+    if(currentUser.email && ADMIN_ALLOWLIST.includes(currentUser.email.toLowerCase())){
+      document.getElementById('adminLink').style.display = 'inline';
+    }
+    // if admin flagged
+    if(currentUser.isAdmin) document.getElementById('adminLink').style.display = 'inline';
+  } else {
+    ctrl.innerHTML = '';
+    // default: keep services visible or hidden depending on preference
+    // document.getElementById('services').classList.add('hidden'); // uncomment to restrict visitors
+  }
+}
+
+/* signOut wrapper for local-mode or firebase */
+function signOutLocal(){
+  if(useLocalMode){
+    onUserSignedOut();
+  } else {
+    auth.signOut();
+  }
+}
+
+/* When Firebase auth state changes, sync local currentUser */
+if(!useLocalMode){
+  auth.onAuthStateChanged(async (u)=>{
+    if(u){
+      // load profile from Firestore if any
+      let profile = {};
+      try{
+        const doc = await db.collection('clients').doc(u.uid).get();
+        if(doc.exists) profile = doc.data();
+      }catch(e){}
+      currentUser = {uid:u.uid,email:u.email,profile,isAdmin: ADMIN_ALLOWLIST.includes((u.email||'').toLowerCase()), isLocal:false};
+      updateUserUI();
+    } else {
+      currentUser = null;
+      updateUserUI();
+    }
+  });
+}
+
+/* Implement local sign-in/register helpers for testing */
+(function wireLocalHelpers(){
+  // Expose simple functions for local sign-in from forms
+  window.handleRegister = handleRegister;
+  window.handleLogin = handleLogin;
+  window.handleReset = handleReset;
+})();
+
+/* If user logged in via local mode earlier (none persisted), nothing to do */
+
+/* small initialization */
+openSection('home');
+selectService('dev');
+showAuth('login'); // show login tab by default
+
+</script>
 </body>
 </html>
